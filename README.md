@@ -13,12 +13,15 @@ This project focuses on clean structure, error handling, and modular design.
 ## Features
 
 - Matrix creation and destruction
+
 - Matrix comparison with tolerance
+
 - Arithmetic operations:
   - Addition
   - Subtraction
   - Scalar multiplication
   - Matrix multiplication
+  
 - Advanced operations:
   - Transpose
   - Determinant
@@ -29,13 +32,21 @@ This project focuses on clean structure, error handling, and modular design.
 
 ## Project Structure
 
-
-src/ implementation files
-include/ public API (matrix.h)
-tests/ unit tests
-tests/logs/ test logs
-coverage/ coverage reports
-
+```
+  matrix/
+  ├── src/
+  │   ├── arithmetics.c
+  │   ├── comparison.c
+  │   ├── helpers.c
+  │   ├── main_funcs.c
+  │   └── other.c
+  ├── include/
+  │   └── my_matrix.h
+  ├── tests/
+  │   └── tests.c
+  ├── Makefile
+  └── README.md
+```
 
 ---
 
@@ -43,19 +54,30 @@ coverage/ coverage reports
 
 ```bash
 make
-Run tests
+```
+
+## Run tests
+```bash
 make test
+```
 
 Test logs will be saved in:
 
-tests/logs/
-Code Coverage
+`tests/logs/`
+
+## Code Coverage
+
+```bash
 make gcov_report
+```
 
 Coverage report will be generated in:
 
-coverage/
-Usage Example
+`coverage/`
+
+## Usage Example
+
+```C
 #include "matrix.h"
 
 int main() {
@@ -82,15 +104,18 @@ int main() {
 
     return 0;
 }
-Requirements
-GCC (C11)
-make
-Check (for unit tests)
-lcov (optional, for coverage)
-Notes
+```
+
+## Requirements
+- GCC (C11)
+- make
+- Check (for unit tests)
+- lcov (optional, for coverage)
+
+## Notes
 
 This project was developed as part of learning C programming and focuses on:
 
-modular design
-memory management
-error handling
+- modular design
+- memory management
+- error handling

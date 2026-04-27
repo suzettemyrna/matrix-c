@@ -69,13 +69,13 @@ int copy_matrix(matrix_t *A, matrix_t *copy) {
   return res;
 }
 
-// A_extend - расширенная вправо матрица для вычисления методом Гаусса-Жордана
+// A_extend is the matrix expanded to the right for calculation by the Gauss-Jordan method
 void fill_extended_matrix(matrix_t *A, matrix_t *A_extend) {
   for (int i = 0; i < A->rows; i++) {
     for (int j = 0; j < A->columns; j++) {
       A_extend->data[i][j] = A->data[i][j];
     }
-    // Заполняем матрицу нулями, а её диагональ - единицами
+    // We fill the matrix with zeros, and its diagonal with ones
     for (int j = 0; j < A->rows; j++) {
       A_extend->data[i][j + A->columns] = (i == j) ? 1 : 0;
     }
@@ -86,7 +86,7 @@ int gaussian_elimination(matrix_t *A) {
   int res = MATRIX_OK;
 
   for (int i = 0; i < A->rows; i++) {
-    // Если на диагонали стоит 0, то меняем строки местами
+    // If there is a 0 on the diagonal, then swap the rows
     if (fabs(A->data[i][i]) < EPS) {
       int flag = 0;
       for (int j = i + 1; j < A->rows && flag; j++) {
@@ -100,19 +100,17 @@ int gaussian_elimination(matrix_t *A) {
         }
       }
     }
-    // Приводим диагональный элемент к 1
+    // Reducing the diagonal element to 1
     double diag = A->data[i][i];
-    // Делим его строку на диагональный элемент, чтобы сделать его единицей
+    // Dividing its row by a diagonal element to make it a unit
     for (int l = 0; l < A->columns; l++) {
       A->data[i][l] /= diag;
     }
-    // Элементы в столбце под диагональным элементом приводим к 0:
-    // Вычитаем из второй и третьей строк первую строку, умноженную на
-    // соответствующий коэффициент
+    // Reducing the elements in the column under the diagonal element to 0:
+    // Subtracting the first row from the second and third rows multiplied by the corresponding coefficient
     for (int m = 0; m < A->rows; m++) {
       if (m != i) {
-        // Коэффициент - элемент из столбца диагонального элемента и из
-        // соответствущей строки
+        // Coefficient is an element from the column of the diagonal element and from the corresponding row
         double factor = A->data[m][i];
         for (int n = 0; n < A->columns; n++) {
           double tmp = A->data[m][n] - factor * A->data[i][n];

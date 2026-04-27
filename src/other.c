@@ -25,7 +25,7 @@ int matrix_determinant(matrix_t *A, double *result) {
   if (!is_matrix_ok(A) || !is_square(A)) return MATRIX_ERR_CALC;
 
   int res = MATRIX_OK;
-  // Если элемент в матрице один, то этот элемент и есть определитель
+  // If there is only one element in the matrix, then this element is the determinant
   if (A->rows == 1) {
     *result = A->data[0][0];
 
@@ -53,7 +53,7 @@ int matrix_determinant(matrix_t *A, double *result) {
         minor = NULL;
       }
     }
-    if (fabs(*result) < EPS) *result = 0.0;  // Чтобы не было -0
+    if (fabs(*result) < EPS) *result = 0.0;  // So that there is no -0
   }
 
   return res;
@@ -99,7 +99,7 @@ int matrix_inverse_matrix(matrix_t *A, matrix_t *result) {
 
   int res = MATRIX_OK;
   matrix_t A_copy;
-  // На случай матрицы 1х1:
+  // In the case of a 1x1 matrix:
   if (A->rows == 1) {
     if ((res = matrix_create(A->rows, A->columns, result)) == MATRIX_OK) {
       if (A->data[0][0] == 0)
@@ -110,7 +110,7 @@ int matrix_inverse_matrix(matrix_t *A, matrix_t *result) {
 
   } else {
     if ((res = copy_matrix(A, &A_copy)) == MATRIX_OK) {
-      // Если детерминант равен нулю, невозможно создать обратную матрицу
+      // If the determinant is zero, it is impossible to create an inverse matrix.
       double det = 0.0;
       if ((res = matrix_determinant(&A_copy, &det)) == MATRIX_OK) {
         if (det == 0.0) res = MATRIX_ERR_CALC;
@@ -118,7 +118,7 @@ int matrix_inverse_matrix(matrix_t *A, matrix_t *result) {
     }
     matrix_destroy(&A_copy);
 
-    //  Для расширенной матрицы
+    //  For the extended matrix
     matrix_t A_extend;
     if (matrix_create(A->rows, A->columns, result) != MATRIX_OK ||
         matrix_create(A->rows, A->columns * 2, &A_extend) != MATRIX_OK) {
@@ -130,7 +130,7 @@ int matrix_inverse_matrix(matrix_t *A, matrix_t *result) {
     }
 
     if (res == MATRIX_OK) {
-      // Копируем правую часть расширенной матрицы в результат
+      // Copying the right side of the expanded matrix to the result
       for (int i = 0; i < A_extend.rows; i++) {
         for (int j = 0; j < A_extend.rows; j++) {
           result->data[i][j] = A_extend.data[i][j + A_extend.rows];

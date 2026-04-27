@@ -9,9 +9,7 @@ int matrix_create(int rows, int columns, matrix_t *result) {
   result->rows = rows;
   result->columns = columns;
 
-  // Выделяем память для массива указателей на строки
   result->data = calloc(rows, sizeof(double *));
-  // Выделяем память для каждой строки
   for (int i = 0; i < rows; i++) {
     result->data[i] = calloc(columns, sizeof(double));
   }
