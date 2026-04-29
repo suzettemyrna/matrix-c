@@ -17,7 +17,7 @@ extern "C" {
  * Constants
  * =========================== */
 
- #define EPS 1e-7
+#define EPS 1e-7
 
 /* ===========================
  * Types
@@ -38,9 +38,9 @@ typedef struct matrix_struct {
  * @brief Error codes returned by library functions
  */
 typedef enum {
-    MATRIX_OK = 0,
-    MATRIX_ERR_INVALID = 1,
-    MATRIX_ERR_CALC = 2
+  MATRIX_OK = 0,
+  MATRIX_ERR_INVALID = 1,
+  MATRIX_ERR_CALC = 2
 } matrix_error_t;
 
 /* ===========================
@@ -79,19 +79,19 @@ int matrix_equal(const matrix_t *A, const matrix_t *B);
  * Arithmetic operations
  * =========================== */
 
-int matrix_add(matrix_t *a, matrix_t *b, matrix_t *result);
-int matrix_sub(matrix_t *a, matrix_t *b, matrix_t *result);
-int matrix_mul_scalar(matrix_t *A, double number, matrix_t *result);
-int matrix_mul(matrix_t *A, matrix_t *B, matrix_t *result);
+int matrix_add(const matrix_t *a, const matrix_t *b, matrix_t *result);
+int matrix_sub(const matrix_t *a, const matrix_t *b, matrix_t *result);
+int matrix_mul_scalar(const matrix_t *A, double number, matrix_t *result);
+int matrix_mul(const matrix_t *A, const matrix_t *B, matrix_t *result);
 
 /* ===========================
  * Advanced operations
  * =========================== */
 
-int matrix_transpose(matrix_t *A, matrix_t *result);
-int matrix_calc_complements(matrix_t *A, matrix_t *result);
-int matrix_determinant(matrix_t *A, double *result);
-int matrix_inverse_matrix(matrix_t *A, matrix_t *result);
+int matrix_transpose(const matrix_t *A, matrix_t *result);
+int matrix_calc_complements(const matrix_t *A, matrix_t *result);
+int matrix_determinant(const matrix_t *A, double *result);
+int matrix_inverse(const matrix_t *A, matrix_t *result);
 
 #ifdef __cplusplus
 }

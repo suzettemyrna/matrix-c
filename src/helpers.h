@@ -3,12 +3,10 @@
 
 #include "matrix.h"
 
-void zeroes(matrix_t *A);
-int is_matrix_ok(matrix_t *A);
-int is_square(matrix_t *A);
-matrix_t *create_minor(int excluded_row, int excluded_column, matrix_t *A);
-int copy_matrix(matrix_t *A, matrix_t *copy);
-void fill_extended_matrix(matrix_t *A, matrix_t *A_extend);
-int gaussian_elimination(matrix_t *A);
+int is_matrix_ok(const matrix_t *A);
+int validate_one(const matrix_t *A);
+int validate_two(const matrix_t *A, const matrix_t *B);
+int is_square(const matrix_t *A);
+int are_shapes_equal(const matrix_t *A, const matrix_t *B);
 
 #endif

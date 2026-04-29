@@ -55,10 +55,10 @@ gcov_report: clean
 	xdg-open $(COV_DIR)/report/index.html || open $(COV_DIR)/report/index.html
 
 style:
-	clang-format -n $(SRC_DIR)/*.c include/*.h tests/*.c
+	clang-format -n $(SRC_DIR)/*.c $(SRC_DIR)/*.h include/*.h $(TEST_DIR)/*.c $(TEST_DIR)/*.h
 
 format:
-	clang-format -i $(SRC_DIR)/*.c include/*.h tests/*.c
+	clang-format -i $(SRC_DIR)/*.c $(SRC_DIR)/*.h include/*.h $(TEST_DIR)/*.c $(TEST_DIR)/*.h
 
 clean:
 	rm -rf $(OBJS) $(TARGET) $(TEST_BIN) *.gcda *.gcno *.info report

@@ -1,7 +1,24 @@
-#include <stdlib.h>
-#include <stdbool.h>
-
 #include "tests.h"
+
+#include <stdbool.h>
+#include <stdlib.h>
+
+/*  HELPER FUNC */
+
+static void initialize_matrix(const matrix_t *A, double start_value,
+                              double iteration_step) {
+  if (A != NULL && A->data != NULL) {
+    double value = start_value;
+
+    for (int i = 0; i < A->rows; i++) {
+      for (int j = 0; j < A->columns; j++) {
+        A->data[i][j] = value;
+        value += iteration_step;
+      }
+    }
+  }
+}
+
 /*  TEST OPTIONS */
 
 START_TEST(matrix_create_1) {
@@ -13,13 +30,13 @@ START_TEST(matrix_create_1) {
 END_TEST
 
 START_TEST(matrix_create_2) {
-  // false null pointer
+  // 0 null pointer
   ck_assert_int_eq(matrix_create(5, 5, NULL), MATRIX_ERR_INVALID);
 }
 END_TEST
 
 START_TEST(matrix_create_3) {
-  // false incorrect rows/columns
+  // 0 incorrect rows/columns
   matrix_t A = {};
   ck_assert_int_eq(matrix_create(5, 0, &A), MATRIX_ERR_INVALID);
 }
@@ -35,14 +52,14 @@ START_TEST(matrix_destroy_1) {
 END_TEST
 
 START_TEST(matrix_destroy_2) {
-  // false handle null pointer
+  // 0 handle null pointer
   matrix_destroy(NULL);
   ck_assert_int_eq(1, 1);
 }
 END_TEST
 
 START_TEST(matrix_destroy_3) {
-  // false handle MATRIX_ERR_INVALID structure
+  // 0 handle MATRIX_ERR_INVALID structure
   matrix_t A = {};
   matrix_destroy(&A);
   ck_assert_int_eq(1, 1);
@@ -57,7 +74,7 @@ START_TEST(matrix_equal_1) {
   matrix_create(5, 5, &B);
   initialize_matrix(&A, 21, 21);
   initialize_matrix(&B, 21, 21);
-  ck_assert_int_eq(matrix_equal(&A, &B), true);
+  ck_assert_int_eq(matrix_equal(&A, &B), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
 }
@@ -69,7 +86,7 @@ START_TEST(matrix_equal_2) {
   matrix_t B = {};
   matrix_create(5, 5, &A);
   matrix_create(5, 5, &B);
-  ck_assert_int_eq(matrix_equal(&A, &B), true);
+  ck_assert_int_eq(matrix_equal(&A, &B), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
 }
@@ -83,50 +100,50 @@ START_TEST(matrix_equal_3) {
   matrix_create(5, 5, &B);
   initialize_matrix(&A, 1, 0.000000001);
   initialize_matrix(&B, 1, 0.000000002);
-  ck_assert_int_eq(matrix_equal(&A, &B), true);
+  ck_assert_int_eq(matrix_equal(&A, &B), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
 }
 END_TEST
 
 START_TEST(matrix_equal_4) {
-  // false with different dimensions of matrices
+  // 0 with different dimensions of matrices
   matrix_t A = {};
   matrix_t B = {};
   matrix_create(5, 5, &A);
   matrix_create(3, 4, &B);
-  ck_assert_int_eq(matrix_equal(&A, &B), false);
+  ck_assert_int_eq(matrix_equal(&A, &B), 0);
   matrix_destroy(&A);
   matrix_destroy(&B);
 }
 END_TEST
 
 START_TEST(matrix_equal_5) {
-  // false with MATRIX_ERR_INVALID
+  // 0 with MATRIX_ERR_INVALID
   matrix_t A = {};
   matrix_t B = {};
   matrix_create(5, 5, &A);
-  ck_assert_int_eq(matrix_equal(&A, &B), false);
+  ck_assert_int_eq(matrix_equal(&A, &B), 0);
   matrix_destroy(&A);
 }
 END_TEST
 
 START_TEST(matrix_equal_6) {
-  // false with different values
+  // 0 with different values
   matrix_t A = {};
   matrix_t B = {};
   matrix_create(5, 5, &A);
   matrix_create(5, 5, &B);
   initialize_matrix(&A, 21, 1);
   initialize_matrix(&B, 42, 1);
-  ck_assert_int_eq(matrix_equal(&A, &B), false);
+  ck_assert_int_eq(matrix_equal(&A, &B), 0);
   matrix_destroy(&A);
   matrix_destroy(&B);
 }
 END_TEST
 
 START_TEST(matrix_add_1) {
-  // false error with wrong matrices
+  // 0 error with wrong matrices
   matrix_t A = {};
   matrix_t B = {};
   ck_assert_int_eq(matrix_add(&A, &B, NULL), MATRIX_ERR_INVALID);
@@ -134,7 +151,7 @@ START_TEST(matrix_add_1) {
 END_TEST
 
 START_TEST(matrix_add_2) {
-  // false with different dimensions of matrices
+  // 0 with different dimensions of matrices
   matrix_t A = {};
   matrix_t B = {};
   matrix_t result = {};
@@ -147,7 +164,7 @@ START_TEST(matrix_add_2) {
 END_TEST
 
 START_TEST(matrix_add_3) {
-  // false with non-finite value
+  // 0 with non-finite value
   matrix_t A = {};
   matrix_t B = {};
   matrix_t result = {};
@@ -176,7 +193,7 @@ START_TEST(matrix_add_4) {
   initialize_matrix(&B, 1, 1);
   initialize_matrix(&eq_matrix, 2, 2);
   ck_assert_int_eq(matrix_add(&A, &B, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -194,7 +211,7 @@ START_TEST(matrix_add_5) {
   matrix_create(5, 5, &B);
   matrix_create(5, 5, &eq_matrix);
   ck_assert_int_eq(matrix_add(&A, &B, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -221,7 +238,7 @@ START_TEST(matrix_add_6) {
   eq_matrix.data[0][0] = 2, eq_matrix.data[0][1] = 2, eq_matrix.data[0][2] = 3;
   eq_matrix.data[1][0] = 2, eq_matrix.data[1][1] = 4, eq_matrix.data[1][2] = 5;
   eq_matrix.data[2][0] = 3, eq_matrix.data[2][1] = 4, eq_matrix.data[2][2] = 7;
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -230,7 +247,7 @@ START_TEST(matrix_add_6) {
 END_TEST
 
 START_TEST(matrix_sub_1) {
-  // false error with wrong matrices
+  // 0 error with wrong matrices
   matrix_t A = {};
   matrix_t B = {};
   ck_assert_int_eq(matrix_sub(&A, &B, NULL), MATRIX_ERR_INVALID);
@@ -238,7 +255,7 @@ START_TEST(matrix_sub_1) {
 END_TEST
 
 START_TEST(matrix_sub_2) {
-  // false with different dimensions of matrices
+  // 0 with different dimensions of matrices
   matrix_t A = {};
   matrix_t B = {};
   matrix_t result = {};
@@ -251,7 +268,7 @@ START_TEST(matrix_sub_2) {
 END_TEST
 
 START_TEST(matrix_sub_3) {
-  // false with non-finite value
+  // 0 with non-finite value
   matrix_t A = {};
   matrix_t B = {};
   matrix_t result = {};
@@ -279,7 +296,7 @@ START_TEST(matrix_sub_4) {
   initialize_matrix(&A, 1, 1);
   initialize_matrix(&B, 1, 1);
   ck_assert_int_eq(matrix_sub(&A, &B, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -297,7 +314,7 @@ START_TEST(matrix_sub_5) {
   matrix_create(5, 5, &B);
   matrix_create(5, 5, &eq_matrix);
   ck_assert_int_eq(matrix_sub(&A, &B, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -325,7 +342,7 @@ START_TEST(matrix_sub_6) {
   eq_matrix.data[1][0] = -2, eq_matrix.data[1][1] = 4, eq_matrix.data[1][2] = 5;
   eq_matrix.data[2][0] = -3, eq_matrix.data[2][1] = -4,
   eq_matrix.data[2][2] = 5;
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -334,7 +351,7 @@ START_TEST(matrix_sub_6) {
 END_TEST
 
 START_TEST(matrix_mul_scalar_1) {
-  // false with MATRIX_ERR_INVALID
+  // 0 with MATRIX_ERR_INVALID
   matrix_t A = {};
   double number = 3.14;
   matrix_create(3, 3, &A);
@@ -345,7 +362,7 @@ START_TEST(matrix_mul_scalar_1) {
 END_TEST
 
 START_TEST(matrix_mul_scalar_2) {
-  // false with non-finite input double
+  // 0 with non-finite input double
   matrix_t A = {};
   matrix_t result = {};
   double number = INFINITY;
@@ -357,7 +374,7 @@ START_TEST(matrix_mul_scalar_2) {
 END_TEST
 
 START_TEST(matrix_mul_scalar_3) {
-  // false with with the resulting non-finite
+  // 0 with with the resulting non-finite
   matrix_t A = {};
   matrix_t result = {};
   double number = 3;
@@ -379,7 +396,7 @@ START_TEST(matrix_mul_scalar_4) {
   matrix_create(3, 3, &A);
   matrix_create(3, 3, &eq_matrix);
   ck_assert_int_eq(matrix_mul_scalar(&A, number, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&result);
   matrix_destroy(&eq_matrix);
@@ -397,7 +414,7 @@ START_TEST(matrix_mul_scalar_5) {
   matrix_create(3, 3, &eq_matrix);
   initialize_matrix(&eq_matrix, 3, 3);
   ck_assert_int_eq(matrix_mul_scalar(&A, number, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&result);
   matrix_destroy(&eq_matrix);
@@ -419,7 +436,7 @@ START_TEST(matrix_mul_scalar_6) {
   eq_matrix.data[1][0] = 0, eq_matrix.data[1][1] = 8, eq_matrix.data[1][2] = 4;
   eq_matrix.data[2][0] = 4, eq_matrix.data[2][1] = 6, eq_matrix.data[2][2] = 8;
   ck_assert_int_eq(matrix_mul_scalar(&A, number, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&result);
   matrix_destroy(&eq_matrix);
@@ -427,7 +444,7 @@ START_TEST(matrix_mul_scalar_6) {
 END_TEST
 
 START_TEST(matrix_mul_1) {
-  // false with MATRIX_ERR_INVALID
+  // 0 with MATRIX_ERR_INVALID
   matrix_t A = {};
   matrix_create(3, 3, &A);
   initialize_matrix(&A, 1, 1);
@@ -437,7 +454,7 @@ START_TEST(matrix_mul_1) {
 END_TEST
 
 START_TEST(matrix_mul_2) {
-  // false with with the resulting non-finite
+  // 0 with with the resulting non-finite
   matrix_t A = {};
   matrix_t B = {};
   matrix_t result = {};
@@ -453,7 +470,7 @@ START_TEST(matrix_mul_2) {
 END_TEST
 
 START_TEST(matrix_mul_3) {
-  // false with different dimensions of matrices
+  // 0 with different dimensions of matrices
   matrix_t A = {};
   matrix_t B = {};
   matrix_t result = {};
@@ -475,7 +492,7 @@ START_TEST(matrix_mul_4) {
   matrix_create(3, 3, &B);
   matrix_create(3, 3, &eq_matrix);
   ck_assert_int_eq(matrix_mul(&A, &B, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -501,7 +518,7 @@ START_TEST(matrix_mul_5) {
   eq_matrix.data[2][0] = 102, eq_matrix.data[2][1] = 126,
   eq_matrix.data[2][2] = 150;
   ck_assert_int_eq(matrix_mul(&A, &B, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -532,7 +549,7 @@ START_TEST(matrix_mul_6) {
   ck_assert_int_eq(matrix_mul(&A, &B, &result), MATRIX_OK);
   // matrix_print_matrix(&result);
   // matrix_print_matrix(&eq_matrix);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&B);
   matrix_destroy(&result);
@@ -541,7 +558,7 @@ START_TEST(matrix_mul_6) {
 END_TEST
 
 START_TEST(matrix_transpose_1) {
-  // false with MATRIX_ERR_INVALID
+  // 0 with MATRIX_ERR_INVALID
   matrix_t A = {};
   matrix_t result = {};
   ck_assert_int_eq(matrix_transpose(&A, &result), MATRIX_ERR_INVALID);
@@ -586,7 +603,7 @@ START_TEST(matrix_transpose_4) {
   eq_matrix.data[0][0] = 1, eq_matrix.data[0][1] = 4;
   eq_matrix.data[1][0] = 2, eq_matrix.data[1][1] = 5;
   eq_matrix.data[2][0] = 3, eq_matrix.data[2][1] = 6;
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   ck_assert_int_eq(result.rows, 3);
   ck_assert_int_eq(result.columns, 2);
   matrix_destroy(&A);
@@ -608,7 +625,7 @@ START_TEST(matrix_transpose_5) {
   ck_assert_int_eq(matrix_transpose(&A, &result), MATRIX_OK);
   eq_matrix.data[0][0] = 1, eq_matrix.data[0][1] = 2, eq_matrix.data[0][2] = 3;
   eq_matrix.data[1][0] = 4, eq_matrix.data[1][1] = 5, eq_matrix.data[1][2] = 6;
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   ck_assert_int_eq(result.rows, 2);
   ck_assert_int_eq(result.columns, 3);
   matrix_destroy(&A);
@@ -618,7 +635,7 @@ START_TEST(matrix_transpose_5) {
 END_TEST
 
 START_TEST(matrix_calc_complements_1) {
-  // false with MATRIX_ERR_INVALID
+  // 0 with MATRIX_ERR_INVALID
   matrix_t A = {};
   matrix_create(3, 3, &A);
   ck_assert_int_eq(matrix_calc_complements(&A, NULL), MATRIX_ERR_INVALID);
@@ -627,7 +644,7 @@ START_TEST(matrix_calc_complements_1) {
 END_TEST
 
 START_TEST(matrix_calc_complements_2) {
-  // false with vector matrix (rows or cols == 1)
+  // 0 with vector matrix (rows or cols == 1)
   matrix_t A = {};
   matrix_t result = {};
   matrix_create(1, 3, &A);
@@ -654,7 +671,7 @@ START_TEST(matrix_calc_complements_3) {
   eq_matrix.data[1][2] = 8;
   eq_matrix.data[2][0] = -8, eq_matrix.data[2][1] = -2,
   eq_matrix.data[2][2] = 4;
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&result);
   matrix_destroy(&eq_matrix);
@@ -662,7 +679,7 @@ START_TEST(matrix_calc_complements_3) {
 END_TEST
 
 START_TEST(matrix_determinant_1) {
-  // false with MATRIX_ERR_INVALID
+  // 0 with MATRIX_ERR_INVALID
   matrix_t A = {};
   double det = 0;
   ck_assert_int_eq(matrix_determinant(&A, &det), MATRIX_ERR_INVALID);
@@ -670,7 +687,7 @@ START_TEST(matrix_determinant_1) {
 END_TEST
 
 START_TEST(matrix_determinant_2) {
-  // false with non-square matrix
+  // 0 with non-square matrix
   matrix_t A = {};
   double det = 0;
   matrix_create(3, 2, &A);
@@ -716,37 +733,37 @@ START_TEST(matrix_determinant_5) {
 }
 END_TEST
 
-START_TEST(matrix_inverse_matrix_1) {
-  // false with MATRIX_ERR_INVALID
+START_TEST(matrix_inverse_1) {
+  // 0 with MATRIX_ERR_INVALID
   matrix_t A = {};
   matrix_t result = {};
-  ck_assert_int_eq(matrix_inverse_matrix(&A, &result), MATRIX_ERR_INVALID);
+  ck_assert_int_eq(matrix_inverse(&A, &result), MATRIX_ERR_INVALID);
 }
 END_TEST
 
-START_TEST(matrix_inverse_matrix_2) {
-  // false when matrix has determinant equal to zero
+START_TEST(matrix_inverse_2) {
+  // 0 when matrix has determinant equal to zero
   matrix_t A = {};
   matrix_t result = {};
   matrix_create(3, 3, &A);
   initialize_matrix(&A, 1, 1);
-  ck_assert_int_eq(matrix_inverse_matrix(&A, &result), MATRIX_ERR_CALC);
+  ck_assert_int_eq(matrix_inverse(&A, &result), MATRIX_ERR_CALC);
   matrix_destroy(&A);
 }
 END_TEST
 
-START_TEST(matrix_inverse_matrix_3) {
-  // false with non-square matrix
+START_TEST(matrix_inverse_3) {
+  // 0 with non-square matrix
   matrix_t A = {};
   matrix_t result = {};
   matrix_create(5, 3, &A);
   initialize_matrix(&A, 1, 1);
-  ck_assert_int_eq(matrix_inverse_matrix(&A, &result), MATRIX_ERR_CALC);
+  ck_assert_int_eq(matrix_inverse(&A, &result), MATRIX_ERR_CALC);
   matrix_destroy(&A);
 }
 END_TEST
 
-START_TEST(matrix_inverse_matrix_4) {
+START_TEST(matrix_inverse_4) {
   // true matrix 1x1
   matrix_t A = {};
   matrix_t result = {};
@@ -755,15 +772,15 @@ START_TEST(matrix_inverse_matrix_4) {
   matrix_create(1, 1, &eq_matrix);
   A.data[0][0] = 21;
   eq_matrix.data[0][0] = 1.0 / 21.0;
-  ck_assert_int_eq(matrix_inverse_matrix(&A, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_inverse(&A, &result), MATRIX_OK);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
   matrix_destroy(&A);
   matrix_destroy(&result);
   matrix_destroy(&eq_matrix);
 }
 END_TEST
 
-START_TEST(matrix_inverse_matrix_5) {
+START_TEST(matrix_inverse_5) {
   // true with task reference values
   matrix_t A = {};
   matrix_t result = {};
@@ -778,8 +795,41 @@ START_TEST(matrix_inverse_matrix_5) {
   eq_matrix.data[1][2] = -34;
   eq_matrix.data[2][0] = 27, eq_matrix.data[2][1] = -29,
   eq_matrix.data[2][2] = 24;
-  ck_assert_int_eq(matrix_inverse_matrix(&A, &result), MATRIX_OK);
-  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), true);
+  ck_assert_int_eq(matrix_inverse(&A, &result), MATRIX_OK);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
+  matrix_destroy(&A);
+  matrix_destroy(&result);
+  matrix_destroy(&eq_matrix);
+}
+END_TEST
+
+START_TEST(matrix_inverse_6) {
+  // true with swap case
+  matrix_t A = {};
+  matrix_t result = {};
+  matrix_t eq_matrix = {};
+
+  matrix_create(2, 2, &A);
+  matrix_create(2, 2, &eq_matrix);
+
+  // forcing row swap in gaussian elimination
+  A.data[0][0] = 0;  A.data[0][1] = 1;
+  A.data[1][0] = 2;  A.data[1][1] = 3;
+
+  // expected inverse
+  // det = (0*3 - 2*1) = -2
+  // inverse =
+  // [ -3/2   1/2 ]
+  // [  1     0   ]
+
+  eq_matrix.data[0][0] = -1.5;
+  eq_matrix.data[0][1] = 0.5;
+  eq_matrix.data[1][0] = 1.0;
+  eq_matrix.data[1][1] = 0.0;
+
+  ck_assert_int_eq(matrix_inverse(&A, &result), MATRIX_OK);
+  ck_assert_int_eq(matrix_equal(&result, &eq_matrix), 1);
+
   matrix_destroy(&A);
   matrix_destroy(&result);
   matrix_destroy(&eq_matrix);
@@ -917,14 +967,15 @@ Suite *matrix_determinant_suite(void) {
   return suite;
 }
 
-Suite *matrix_inverse_matrix_suite(void) {
-  Suite *suite = suite_create("matrix_inverse_matrix");
-  TCase *tc_core = tcase_create("core_of_inverse_matrix");
-  tcase_add_test(tc_core, matrix_inverse_matrix_1);
-  tcase_add_test(tc_core, matrix_inverse_matrix_2);
-  tcase_add_test(tc_core, matrix_inverse_matrix_3);
-  tcase_add_test(tc_core, matrix_inverse_matrix_4);
-  tcase_add_test(tc_core, matrix_inverse_matrix_5);
+Suite *matrix_inverse_suite(void) {
+  Suite *suite = suite_create("matrix_inverse");
+  TCase *tc_core = tcase_create("core_of_inverse");
+  tcase_add_test(tc_core, matrix_inverse_1);
+  tcase_add_test(tc_core, matrix_inverse_2);
+  tcase_add_test(tc_core, matrix_inverse_3);
+  tcase_add_test(tc_core, matrix_inverse_4);
+  tcase_add_test(tc_core, matrix_inverse_5);
+  tcase_add_test(tc_core, matrix_inverse_6);
   suite_add_tcase(suite, tc_core);
 
   return suite;
@@ -946,25 +997,27 @@ int main(void) {
   int failed_count = 0;
 
   matrix_suit_execution(matrix_create_suite(), &failed_count,
-                    "tests/create_matrix.log");
+                        "tests/create_matrix.log");
   matrix_suit_execution(matrix_destroy_suite(), &failed_count,
-                    "tests/remove_matrix.log");
-  matrix_suit_execution(matrix_equal_suite(), &failed_count, "tests/eq_matrix.log");
+                        "tests/remove_matrix.log");
+  matrix_suit_execution(matrix_equal_suite(), &failed_count,
+                        "tests/eq_matrix.log");
   matrix_suit_execution(matrix_add_suite(), &failed_count,
-                    "tests/sum_matrix.log");
+                        "tests/sum_matrix.log");
   matrix_suit_execution(matrix_sub_suite(), &failed_count,
-                    "tests/sub_matrix.log");
+                        "tests/sub_matrix.log");
   matrix_suit_execution(matrix_mul_scalar_suite(), &failed_count,
-                    "tests/mult_number.log");
+                        "tests/mult_number.log");
   matrix_suit_execution(matrix_mul_suite(), &failed_count,
-                    "tests/mult_matrix.log");
-  matrix_suit_execution(matrix_transpose_suite(), &failed_count, "tests/transpose.log");
+                        "tests/mult_matrix.log");
+  matrix_suit_execution(matrix_transpose_suite(), &failed_count,
+                        "tests/transpose.log");
   matrix_suit_execution(matrix_calc_complements_suite(), &failed_count,
-                    "tests/calc_complements.log");
+                        "tests/calc_complements.log");
   matrix_suit_execution(matrix_determinant_suite(), &failed_count,
-                    "tests/determinant.log");
-  matrix_suit_execution(matrix_inverse_matrix_suite(), &failed_count,
-                    "tests/inverse_matrix.log");
+                        "tests/determinant.log");
+  matrix_suit_execution(matrix_inverse_suite(), &failed_count,
+                        "tests/inverse_matrix.log");
 
   return failed_count == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

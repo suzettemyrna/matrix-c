@@ -1,24 +1,21 @@
 #include <math.h>
-#include <stdbool.h>
 
 #include "../include/matrix.h"
 #include "helpers.h"
 
+/* PRIMARY FUNC */
+
 int matrix_equal(const matrix_t *A, const matrix_t *B) {
-  if (!A || !B || !A->data || !B->data) return false;
+  if (!validate_two(A, B)) return 0;
+  if (!is_matrix_ok(A) || !is_matrix_ok(B)) return 0;
 
-  int res = true;
+  if (!are_shapes_equal(A, B)) return 0;
 
-  if (A->columns != B->columns || A->rows != B->rows) {
-    res = false;
-
-  } else {
-    for (int i = 0; i < A->rows && res == true; i++) {
-      for (int j = 0; j < A->columns && res == true; j++) {
-        if (fabs(A->data[i][j] - B->data[i][j]) > EPS) res = false;
-      }
+  for (int i = 0; i < A->rows; i++) {
+    for (int j = 0; j < A->columns; j++) {
+      if (fabs(A->data[i][j] - B->data[i][j]) > EPS) return 0;
     }
   }
 
-  return res;
+  return 1;
 }

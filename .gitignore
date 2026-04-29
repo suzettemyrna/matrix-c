@@ -1,0 +1,10 @@
+*.log
+*.
+test
+*.a
+*.info
+gcov_test
+*.o
+*.gcda
+*.gcno
+coverage
