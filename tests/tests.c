@@ -813,8 +813,10 @@ START_TEST(matrix_inverse_6) {
   matrix_create(2, 2, &eq_matrix);
 
   // forcing row swap in gaussian elimination
-  A.data[0][0] = 0;  A.data[0][1] = 1;
-  A.data[1][0] = 2;  A.data[1][1] = 3;
+  A.data[0][0] = 0;
+  A.data[0][1] = 1;
+  A.data[1][0] = 2;
+  A.data[1][1] = 3;
 
   // expected inverse
   // det = (0*3 - 2*1) = -2

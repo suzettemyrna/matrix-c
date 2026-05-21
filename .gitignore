@@ -8,3 +8,5 @@ gcov_test
 *.gcda
 *.gcno
 coverage
+docs/doxygen
+dist

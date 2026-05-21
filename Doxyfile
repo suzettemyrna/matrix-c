@@ -1,0 +1,30 @@
+PROJECT_NAME           = "Matrix Library"
+PROJECT_BRIEF          = "Matrix computation library written in C"
+
+OUTPUT_DIRECTORY       = docs/doxygen
+
+CREATE_SUBDIRS         = NO
+
+OUTPUT_LANGUAGE        = English
+
+INPUT                  = include src
+FILE_PATTERNS          = *.h *.c
+
+RECURSIVE              = YES
+
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+HTML_OUTPUT            = html
+
+GENERATE_TREEVIEW      = YES
+
+INLINE_SOURCES         = YES
+SOURCE_BROWSER         = YES
+
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = NO
