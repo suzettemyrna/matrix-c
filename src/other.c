@@ -4,8 +4,20 @@
 #include "../include/matrix.h"
 #include "helpers.h"
 
-/* HELPERS FOR THIS MODULE */
+/* ===========================
+ * Internal helper functions
+ * =========================== */
 
+ /**
+ * @brief Fills a minor matrix excluding specified row and column.
+ *
+ * Used internally for determinant and cofactor calculations.
+ *
+ * @param excluded_row Row to exclude
+ * @param excluded_column Column to exclude
+ * @param A Source matrix
+ * @param minor Destination minor matrix
+ */
 static void fill_minor_matrix(int excluded_row, int excluded_column,
                               const matrix_t *A, matrix_t *minor) {
   for (int i = 0, minor_row = 0; i < A->rows; i++) {
@@ -21,6 +33,20 @@ static void fill_minor_matrix(int excluded_row, int excluded_column,
   }
 }
 
+/**
+ * @brief Calculates a matrix cofactor value.
+ *
+ * Builds a minor matrix, calculates its determinant,
+ * and applies the alternating sign.
+ *
+ * @param A Source matrix
+ * @param i Row index
+ * @param j Column index
+ * @param result Calculated cofactor value
+ *
+ * @return MATRIX_OK on success,
+ *         error code otherwise
+ */
 static int calc_cofactor(const matrix_t *A, int i, int j, double *result) {
   matrix_t minor;
   int res = matrix_create(A->rows - 1, A->columns - 1, &minor);
@@ -42,8 +68,15 @@ static int calc_cofactor(const matrix_t *A, int i, int j, double *result) {
   return MATRIX_OK;
 }
 
-// A_extend is the matrix expanded to the right for calculation by the
-// Gauss-Jordan method
+/**
+ * @brief Builds an augmented matrix for Gauss-Jordan elimination.
+ *
+ * The resulting matrix has the form [A | I],
+ * where I is the identity matrix.
+ *
+ * @param A Source matrix
+ * @param A_extend Extended matrix
+ */
 static void fill_extended_matrix(const matrix_t *A, matrix_t *A_extend) {
   for (int i = 0; i < A->rows; i++) {
     for (int j = 0; j < A->columns; j++) {
@@ -56,6 +89,17 @@ static void fill_extended_matrix(const matrix_t *A, matrix_t *A_extend) {
   }
 }
 
+/**
+ * @brief Performs Gauss-Jordan elimination.
+ *
+ * Transforms the matrix into reduced row echelon form.
+ * Used internally for inverse matrix calculation.
+ *
+ * @param A Matrix to transform
+ *
+ * @return MATRIX_OK on success,
+ *         MATRIX_ERR_CALC on numerical failure
+ */
 static int gaussian_elimination(const matrix_t *A) {
   for (int i = 0; i < A->rows; i++) {
     // If there is a 0 on the diagonal, then swap the rows
@@ -101,6 +145,15 @@ static int gaussian_elimination(const matrix_t *A) {
   return MATRIX_OK;
 }
 
+/**
+ * @brief Extracts inverse matrix from augmented matrix.
+ *
+ * Copies the right half of the augmented matrix
+ * into the result matrix.
+ *
+ * @param extended Augmented matrix after elimination
+ * @param result Destination inverse matrix
+ */
 static void extract_inverse(const matrix_t *extended, matrix_t *result) {
   int n = result->rows;
 
@@ -111,6 +164,17 @@ static void extract_inverse(const matrix_t *extended, matrix_t *result) {
   }
 }
 
+/**
+ * @brief Creates and initializes an augmented matrix.
+ *
+ * Allocates memory for the extended matrix [A | I].
+ *
+ * @param A Source matrix
+ * @param extended Destination extended matrix
+ *
+ * @return MATRIX_OK on success,
+ *         error code otherwise
+ */
 static int build_extended(const matrix_t *A, matrix_t *extended) {
   int res = matrix_create(A->rows, A->columns * 2, extended);
   if (res != MATRIX_OK) return res;
@@ -119,8 +183,21 @@ static int build_extended(const matrix_t *A, matrix_t *extended) {
   return MATRIX_OK;
 }
 
-/* PRIMARY FUNCS */
+/* ===========================
+ * Public API
+ * =========================== */
 
+ /**
+ * @brief Transposes a matrix.
+ *
+ * Swaps matrix rows and columns.
+ *
+ * @param A Source matrix
+ * @param result Transposed matrix
+ *
+ * @return MATRIX_OK on success,
+ *         error code otherwise
+ */
 int matrix_transpose(const matrix_t *A, matrix_t *result) {
   if (!validate_one(A) || !result) return MATRIX_ERR_INVALID;
 
@@ -137,6 +214,17 @@ int matrix_transpose(const matrix_t *A, matrix_t *result) {
   return MATRIX_OK;
 }
 
+/**
+ * @brief Calculates matrix determinant recursively.
+ *
+ * Uses recursive expansion by minors.
+ *
+ * @param A Source matrix
+ * @param result Determinant value
+ *
+ * @return MATRIX_OK on success,
+ *         error code otherwise
+ */
 int matrix_determinant(const matrix_t *A, double *result) {
   if (!validate_one(A) || result == NULL) return MATRIX_ERR_INVALID;
   if (!is_matrix_ok(A) || !is_square(A)) return MATRIX_ERR_CALC;
@@ -176,6 +264,17 @@ int matrix_determinant(const matrix_t *A, double *result) {
   return MATRIX_OK;
 }
 
+/**
+ * @brief Calculates the cofactor matrix.
+ *
+ * Computes algebraic complements for each matrix element.
+ *
+ * @param A Source matrix
+ * @param result Cofactor matrix
+ *
+ * @return MATRIX_OK on success,
+ *         error code otherwise
+ */
 int matrix_calc_complements(const matrix_t *A, matrix_t *result) {
   if (!validate_one(A) || !result) return MATRIX_ERR_INVALID;
   if (!is_matrix_ok(A) || !is_square(A)) return MATRIX_ERR_CALC;
@@ -209,6 +308,17 @@ int matrix_calc_complements(const matrix_t *A, matrix_t *result) {
   return MATRIX_OK;
 }
 
+/**
+ * @brief Calculates inverse matrix.
+ *
+ * Uses Gauss-Jordan elimination on an augmented matrix.
+ *
+ * @param A Source matrix
+ * @param result Inverse matrix
+ *
+ * @return MATRIX_OK on success,
+ *         error code otherwise
+ */
 int matrix_inverse(const matrix_t *A, matrix_t *result) {
   if (!validate_one(A) || !result) return MATRIX_ERR_INVALID;
   if (!is_matrix_ok(A) || !is_square(A)) return MATRIX_ERR_CALC;

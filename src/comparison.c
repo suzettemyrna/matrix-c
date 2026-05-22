@@ -3,8 +3,22 @@
 #include "../include/matrix.h"
 #include "helpers.h"
 
-/* PRIMARY FUNC */
+/* ===========================
+ * Public API
+ * =========================== */
 
+/**
+ * @brief Compares two matrices with tolerance.
+ *
+ * Matrices are considered equal if all corresponding
+ * elements differ by less than EPS.
+ *
+ * @param A First matrix
+ * @param B Second matrix
+ *
+ * @return 1 if matrices are equal,
+ *         0 otherwise
+ */
 int matrix_equal(const matrix_t *A, const matrix_t *B) {
   if (!validate_two(A, B)) return 0;
   if (!is_matrix_ok(A) || !is_matrix_ok(B)) return 0;
