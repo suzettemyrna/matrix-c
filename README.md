@@ -184,8 +184,8 @@ matrix/
 
 ```bash
 make                # build static library
-make test           # run unit tests
-make gcov_report    # generate coverage report
+make test           # run unit tests + generate coverage report
+make dvi            # generate Doxygen documentation
 make clean          # remove build artifacts
 ```
 
