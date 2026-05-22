@@ -15,7 +15,8 @@ PUBLIC_HEADER_DIR = ./include
 TEST_DIR = ./tests
 
 # Build directories
-LIB_BUILD_DIR = ./build
+BUILD_DIR = ./build
+LIB_BUILD_DIR = $(BUILD_DIR)/lib
 
 TEST_BUILD_DIR = $(TEST_DIR)/build
 LOG_DIR = $(TEST_DIR)/logs
@@ -58,14 +59,14 @@ TEST_SRC = $(wildcard $(TEST_DIR)/*.c)
 # ============================================
 
 PUBLIC_HEADER = $(PUBLIC_HEADER_DIR)/matrix.h
-PRIVATE_HEADER = $(SRC_DIR)/helpers.h
+PRIVATE_HEADER = $(SRC_DIR)/include/matrix_utils.h
 TESTS_HEADER = $(TEST_DIR)/tests.h
 
 # ============================================
 # Objects and targets
 # ============================================
 
-OBJS = $(LIB_SRCS:.c=.o)
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(LIB_SRCS))
 
 STATIC_LIB = $(LIB_BUILD_DIR)/$(LIB_NAME)
 
@@ -88,7 +89,8 @@ $(STATIC_LIB): $(OBJS)
 	ar rcs $@ $^
 	@echo "=== Library build: $(STATIC_LIB) ==="
 
-%.o: %.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # ============================================
@@ -185,12 +187,14 @@ dist: clean
 # ============================================
 
 clean:
-	rm -rf $(LIB_BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 	@echo "Build directory cleaned"
 	rm -rf $(TEST_BUILD_DIR) $(COV_DIR) $(TEST_DIR)/*.log
 	@echo "Tests directory cleaned"
 	rm -rf $(DOXY_DIR)
 	@echo "Doxygen directory cleaned"
+	rm -rf dist
+	@echo "Distribution directory cleaned"
 	@echo "=== Cleanup done ==="
 
 # ============================================

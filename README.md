@@ -63,13 +63,13 @@ Only the public API is intended to be used externally.
 
 Implementation is separated into functional modules:
 
-| Module          | Responsibility                    |
-| --------------- | --------------------------------- |
-| `main_funcs.c`  | memory allocation and destruction |
-| `arithmetics.c` | arithmetic matrix operations      |
-| `comparison.c`  | matrix comparison                 |
-| `other.c`       | advanced matrix algorithms        |
-| `helpers.c`     | internal helper utilities         |
+| Module                | Responsibility                    |
+| --------------------- | --------------------------------- |
+| `matrix_memory.c`     | memory allocation and destruction |
+| `matrix_arithmetic.c` | arithmetic matrix operations      |
+| `matrix_compare.c`    | matrix comparison                 |
+| `matrix_advanced.c`   | advanced matrix algorithms        |
+| `matrix_utils.c`      | internal helper utilities         |
 
 Internal helper functions are isolated from the public API.
 
@@ -147,15 +147,15 @@ This approach makes behavior deterministic and easier to test.
 ```text
 matrix/
 ├── src/
-│   ├── arithmetics.c
-│   ├── comparison.c
-│   ├── helpers.c
-│   ├── main_funcs.c
-│   └── other.c
+│   ├── matrix_arithmetic.c
+│   ├── matrix_compare.c
+│   ├── matrix_utils.c
+│   ├── matrix_memory.c
+│   └── matrix_advanced.c
 │
 ├── include/
 │   ├── matrix.h
-│   └── helpers.h
+│   └── matrix_utils.h
 │
 ├── tests/
 │   ├── logs/

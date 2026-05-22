@@ -1,7 +1,7 @@
 #include <math.h>
 
 #include "../include/matrix.h"
-#include "helpers.h"
+#include "include/matrix_utils.h"
 
 /* ===========================
  * Public API

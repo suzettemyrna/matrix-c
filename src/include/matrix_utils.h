@@ -1,5 +1,5 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef MATRIX_UTILS_H
+#define MATRIX_UTILS_H
 
 #include "matrix.h"
 
@@ -28,4 +28,4 @@ int is_square(const matrix_t *A);
  */
 int are_shapes_equal(const matrix_t *A, const matrix_t *B);
 
-#endif /* HELPERS_H */
+#endif /* MATRIX_UTILS_H */
